@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
 
     borderRadius: 50,
     borderColor: "lightgray",
-    borderWhidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   send: {
     backgroundColor: "royalblue",
