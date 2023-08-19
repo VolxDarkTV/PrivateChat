@@ -1,8 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 // import ChatListItem from './src/components/ChatListItem';
-import ChatsScreen from './src/components/screens/ChatsScreen';
-import ChatScreen from './src/components/screens/ChatScreen';
+// import ChatsScreen from './src/components/screens/ChatsScreen';
+// import ChatScreen from './src/components/screens/ChatScreen';
+import Navigator from './src/navigation';
 
 // const chat ={
 //   id: "1",
@@ -21,8 +22,8 @@ export default function App() {
     <View style={styles.container}>
 
       {/* <ChatListItem chat={chat} /> */}
-      <ChatScreen/>
-
+      {/* <ChatScreen/> */}
+      <Navigator/>
     </View>
   );
 }
