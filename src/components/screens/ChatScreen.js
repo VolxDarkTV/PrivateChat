@@ -20,9 +20,6 @@ const ChatScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   // Imposto il nome della chat in alto
-  console.log('====================================');
-  console.log(route);
-  console.log('====================================');
   useEffect(() => {
     navigation.setOptions({ title: route.params.name });
   }, [route.params.name]);

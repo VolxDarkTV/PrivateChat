@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-privatechat-staging-125136-authRole",
+      "UnauthRoleArn": "arn:aws:iam::421061010375:role/amplify-privatechat-staging-125136-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::421061010375:role/amplify-privatechat-staging-125136-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-privatechat-staging-125136-deployment",
+      "UnauthRoleName": "amplify-privatechat-staging-125136-unauthRole",
+      "StackName": "amplify-privatechat-staging-125136",
+      "StackId": "arn:aws:cloudformation:eu-north-1:421061010375:stack/amplify-privatechat-staging-125136/22330b00-3e8f-11ee-99d8-0af5025ab2ee",
+      "AmplifyAppId": "dru5svftorflr"
+    },
+    "categories": {
+      "auth": {
+        "PrivateChat": {}
+      }
+    }
+  }
+}
