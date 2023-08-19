@@ -1,4 +1,4 @@
-import { StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { StyleSheet, View, Text, Image, Pressable, Linking } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   content:{
-
+    flex: 1,
   },
   name: {
     fontWeight: "bold",

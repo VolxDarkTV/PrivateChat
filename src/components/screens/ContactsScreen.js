@@ -1,15 +1,25 @@
-import { View, Text, FlatList } from 'react-native';
-import chats from '../../../assets/data/chats.json';
-import ContactListItem from '../ContactListItem';
+import { useState, useEffect } from "react";
+import { View, Text, FlatList } from "react-native";
+import ContactListItem from "../ContactListItem";
+import { API, graphqlOperation } from "aws-amplify";
+import { listUsers } from "../../graphql/queries";
 
 const ContactsScreen = () => {
+  //TAKE DATA API & QUERY
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    API.graphql(graphqlOperation(listUsers)).then((result) => {
+      setUsers(result.data?.listUsers?.items)
+    })
+  }, [])
+
   return (
     <FlatList
-      data={chats}
-      renderItem={({item}) => <ContactListItem user={item.user}/> }
-      style={{backgroundColor: 'white'}}
+      data={users}
+      renderItem={({ item }) => <ContactListItem user={item} />}
+      style={{ backgroundColor: "white" }}
     />
-  )
-}
+  );
+};
 
-export default ContactsScreen
+export default ContactsScreen;
