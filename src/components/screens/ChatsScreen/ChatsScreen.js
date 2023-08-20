@@ -15,6 +15,7 @@ const ChatsScreen = () => {
       const response = await API.graphql(
         graphqlOperation(listChatRooms, { id: autUser.attributes.sub })
       );
+
       setChatRooms(response.data.getUser.ChatRooms.items);
     };
 
