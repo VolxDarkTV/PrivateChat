@@ -1,4 +1,13 @@
-import { StyleSheet, View, Text, Image, Pressable, Linking } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Pressable,
+  Linking,
+} from "react-native";
+import { API, graphqlOperation, Auth } from "aws-amplify";
+import { createChatRoom, createUserChatRoom } from "../../graphql/mutations";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -7,8 +16,40 @@ dayjs.extend(relativeTime);
 const ContactListItem = ({ user }) => {
   const navigation = useNavigation();
 
+  const onPress = async () => {
+    console.warn("pressed");
+    //chech if we have a chat with that user
+    //Create a new ChatRoom
+    const newChatRoomData = await API.graphql(
+      graphqlOperation(createChatRoom, { input: {} })
+    );
+    console.log(newChatRoomData);
+    if (!newChatRoomData?.data?.createChatRoom) {
+      console.log("error chatRoom exist");
+    }
+    const newChatRoom = newChatRoomData?.data?.createChatRoom;
+
+    //Add the clicked user to the ChatRoom
+    await API.graphql(
+      graphqlOperation(createUserChatRoom, {
+        input: { chatRoomId: newChatRoom.id, userId: user.id },
+      })
+    );
+
+    //Add the auth user to the ChatRoom
+    const authUser = await Auth.currentAuthenticatedUser();
+    await API.graphql(
+      graphqlOperation(createUserChatRoom, {
+        input: { chatRoomId: newChatRoom.id, userId: authUser.attributes.sub },
+      })
+    );
+
+    //navigate to the newly created ChatRoom
+    navigation.navigate("Chat", { id: newChatRoom.id });
+  };
+
   return (
-    <Pressable onPress={() => {}} style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <Image style={styles.image} source={{ uri: user.image }} />
 
       <View style={styles.content}>
@@ -28,7 +69,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: 20,
     marginVertical: 5,
-    alignItems: 'center',
+    alignItems: "center",
 
     height: 70,
   },
@@ -38,7 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
   },
-  content:{
+  content: {
     flex: 1,
   },
   name: {
