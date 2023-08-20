@@ -9,6 +9,8 @@ import {
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { createChatRoom, createUserChatRoom } from "../../graphql/mutations";
 import { useNavigation } from "@react-navigation/native";
+import { getCommonChatRoomWithUser } from "../../services/chatRoomService";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -18,7 +20,14 @@ const ContactListItem = ({ user }) => {
 
   const onPress = async () => {
     console.warn("pressed");
-    //chech if we have a chat with that user
+    //Chech if we have a chat with that user
+    const existingChatRoom = await getCommonChatRoomWithUser(user.id);
+    if(existingChatRoom){
+      navigation.navigate("Chat", { id: existingChatRoom.id });
+
+      return;
+    }
+
     //Create a new ChatRoom
     const newChatRoomData = await API.graphql(
       graphqlOperation(createChatRoom, { input: {} })
