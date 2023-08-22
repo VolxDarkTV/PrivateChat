@@ -7,7 +7,6 @@ import { listChatRooms } from "./queries";
 
 const ChatsScreen = () => {
   const [chatRoom, setChatRooms] = useState([]);
-
   useEffect(() => {
     const fetchChatRooms = async () => {
       const autUser = await Auth.currentAuthenticatedUser();
@@ -16,7 +15,13 @@ const ChatsScreen = () => {
         graphqlOperation(listChatRooms, { id: autUser.attributes.sub })
       );
 
-      setChatRooms(response.data.getUser.ChatRooms.items);
+      // Filtra le chatRoom con _deleted impostato su false
+      const filteredChatRooms = response.data.getUser.ChatRooms.items.filter(
+        (chatRoom) => chatRoom._deleted !== true
+      );
+
+      setChatRooms(filteredChatRooms);
+      // console.log(filteredChatRooms);
     };
 
     fetchChatRooms();
