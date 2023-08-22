@@ -32,6 +32,9 @@ const ChatScreen = () => {
     );
   }, []);
 
+  // Ordina i messaggi in base alla data in ordine crescente
+  const sortedMessages = chatRoom?.Messages.items.slice().sort((b, a) => a.createdAt.localeCompare(b.createdAt));
+
   // Imposto il nome della chat in alto
   useEffect(() => {
     navigation.setOptions({ title: route.params.name });
@@ -50,7 +53,7 @@ const ChatScreen = () => {
     >
       <ImageBackground source={bg} style={styles.bg}>
         <FlatList
-          data={chatRoom.Messages.items}
+          data={sortedMessages}
           renderItem={({ item }) => <Message message={item} />}
           style={styles.list}
           inverted
