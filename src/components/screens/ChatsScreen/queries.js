@@ -1,11 +1,12 @@
 export const listChatRooms = /* GraphQL */ `
-query GetUser($id: ID!) {
+  query GetUser($id: ID!) {
     getUser(id: $id) {
       id
       name
       ChatRooms {
         items {
           id
+          _deleted
           chatRoom {
             id
             users {
@@ -28,4 +29,12 @@ query GetUser($id: ID!) {
       }
     }
   }
-  `
+`;
+
+export const deleteChatRoom = /* GraphQL */ `
+  mutation DeleteChatRoom($id: ID!) {
+    deleteChatRoom(input: { id: $id }) {
+      id
+    }
+  }
+`;
