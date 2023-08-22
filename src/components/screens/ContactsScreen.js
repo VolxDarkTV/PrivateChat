@@ -27,7 +27,6 @@ const ContactsScreen = () => {
       }
     }
     setUsers(users.filter((user) => user._deleted !== true));
-    console.log(users.filter((user) => user._deleted !== true));
   };
 
   return (

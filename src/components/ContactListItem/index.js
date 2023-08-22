@@ -5,6 +5,7 @@ import {
   Image,
   Pressable,
   Linking,
+  Button,
 } from "react-native";
 import { API, graphqlOperation, Auth } from "aws-amplify";
 import { createChatRoom, createUserChatRoom } from "../../graphql/mutations";
@@ -23,7 +24,8 @@ const ContactListItem = ({ user }) => {
     //Chech if we have a chat with that user
     const existingChatRoom = await getCommonChatRoomWithUser(user.id);
     if(existingChatRoom){
-      navigation.navigate("Chat", { id: existingChatRoom.id });
+      navigation.navigate("Chat", { id: existingChatRoom.chatRoom.id });
+      // console.log(existingChatRoom.chatRoom.id);
 
       return;
     }
