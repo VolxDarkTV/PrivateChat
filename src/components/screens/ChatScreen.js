@@ -14,9 +14,9 @@ import Message from "../Message";
 import InputBox from "../InputBox";
 
 import bg from "../../../assets/images/BG.png";
-import messages from "../../../assets/data/messages.json";
-import { API, graphqlOperation, Auth } from "aws-amplify";
+import { API, graphqlOperation, Auth, Hub } from "aws-amplify"; // Import Hub
 import { getChatRoom } from "../../graphql/queries";
+import { onCreateMessage } from "../../graphql/subscriptions";
 
 const ChatScreen = () => {
   const [chatRoom, setChatRoom] = useState(null);
@@ -30,10 +30,37 @@ const ChatScreen = () => {
     API.graphql(graphqlOperation(getChatRoom, { id: chatroomID })).then(
       (result) => setChatRoom(result?.data?.getChatRoom)
     );
-  }, []);
 
-  // Ordina i messaggi in base alla data in ordine crescente
-  const sortedMessages = chatRoom?.Messages.items.slice().sort((b, a) => a.createdAt.localeCompare(b.createdAt));
+    // Subscribe to onCreateMessage
+    const subscription = API.graphql(
+      graphqlOperation(onCreateMessage)
+    ).subscribe({
+      next: (data) => {
+        const newMessage = data.value.data.onCreateMessage;
+        setChatRoom((prevChatRoom) => {
+          if (prevChatRoom.id !== newMessage.chatroomID) {
+            return prevChatRoom;
+          }
+          return {
+            ...prevChatRoom,
+            Messages: {
+              ...prevChatRoom.Messages,
+              items: [...prevChatRoom.Messages.items, newMessage],
+            },
+          };
+        });
+      },
+    });
+
+    return () => {
+      subscription.unsubscribe(); // Unsubscribe when component unmounts
+    };
+  }, [chatroomID]);
+
+   // Ordina i messaggi in base alla data in ordine crescente
+  const sortedMessages = chatRoom?.Messages.items.slice().sort((b, a) =>
+    a.createdAt.localeCompare(b.createdAt)
+  );
 
   // Imposto il nome della chat in alto
   useEffect(() => {
@@ -72,4 +99,5 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
 export default ChatScreen;
