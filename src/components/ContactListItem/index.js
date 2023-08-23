@@ -8,7 +8,11 @@ import {
   Button,
 } from "react-native";
 import { API, graphqlOperation, Auth } from "aws-amplify";
-import { createChatRoom, createUserChatRoom } from "../../graphql/mutations";
+import {
+  createChatRoom,
+  createUserChatRoom,
+  updateChatRoom,
+} from "../../graphql/mutations";
 import { useNavigation } from "@react-navigation/native";
 import { getCommonChatRoomWithUser } from "../../services/chatRoomService";
 
@@ -23,10 +27,9 @@ const ContactListItem = ({ user }) => {
     console.warn("pressed");
     //Chech if we have a chat with that user
     const existingChatRoom = await getCommonChatRoomWithUser(user.id);
-    if(existingChatRoom){
+    if (existingChatRoom) {
       navigation.navigate("Chat", { id: existingChatRoom.chatRoom.id });
-      // console.log(existingChatRoom.chatRoom.id);
-
+      // console.log(existingChatRoom.chatRoom._deleted);
       return;
     }
 
@@ -59,6 +62,29 @@ const ContactListItem = ({ user }) => {
     navigation.navigate("Chat", { id: newChatRoom.id });
   };
 
+  const addChat = async () => {
+    console.warn("pressed Add Chat");
+    const existingChatRoom = await getCommonChatRoomWithUser(user.id);
+
+    if (existingChatRoom && existingChatRoom.chatRoom._deleted !== false) {
+      const updatedChatRoom = await API.graphql(
+        graphqlOperation(updateChatRoom, {
+          input: {
+            id: existingChatRoom.chatRoom.id,
+            _deleted: false, // Set the _deleted field to false for update
+          },
+        })
+      );
+
+      if (updatedChatRoom?.data?.updateChatRoom) {
+        // Update your state or perform other necessary operations
+        console.log("Chat room updated:", updatedChatRoom.data.updateChatRoom);
+      }
+    }
+
+    navigation.navigate("Chats");
+  };
+
   return (
     <Pressable onPress={onPress} style={styles.container}>
       <Image style={styles.image} source={{ uri: user.image }} />
@@ -71,6 +97,7 @@ const ContactListItem = ({ user }) => {
           {user.status}
         </Text>
       </View>
+      <Button title="Add Chat" onPress={addChat} />
     </Pressable>
   );
 };

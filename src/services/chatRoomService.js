@@ -27,6 +27,7 @@ export const listChatRooms = /* GraphQL */ `
         items {
           chatRoom {
             id
+            _deleted
             users {
               items {
                 id
