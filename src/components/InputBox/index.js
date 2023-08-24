@@ -16,22 +16,23 @@ const InputBox = ({ chatroom }) => {
       text: text,
       userID: authUser.attributes.sub,
     };
-    console.log(newMessage);
-    const newMessageData = await API.graphql(
-      graphqlOperation(createMessage, { input: newMessage })
-    );
+    if(newMessage.text.trim() !== ""){
+      const newMessageData = await API.graphql(
+        graphqlOperation(createMessage, { input: newMessage })
+      );
+      setText("");
+  
+      await API.graphql(
+        graphqlOperation(updateChatRoom, {
+          input: {
+            id: chatroom.id,
+            chatRoomLastMessageId: newMessageData.data.createMessage.id,
+            _version: chatroom._version,
+          },
+        })
+      );
+    }
 
-    setText("");
-
-    await API.graphql(
-      graphqlOperation(updateChatRoom, {
-        input: {
-          id: chatroom.id,
-          chatRoomLastMessageId: newMessageData.data.createMessage.id,
-          _version: chatroom._version,
-        },
-      })
-    );
   };
 
   return (
